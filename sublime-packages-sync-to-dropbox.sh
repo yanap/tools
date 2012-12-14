@@ -7,10 +7,12 @@ already_installed()
 	then
 		reuslt=1
 	fi
+
 	if [ -L ~/Library/Application\ Support/Sublime\ Text\ 2/Packages ]
 	then
 		reuslt=1
 	fi
+
 	if [ -L ~/Library/Application\ Support/Sublime\ Text\ 2/Pristine\ Packages ]
 	then
 		reuslt=1
@@ -43,7 +45,6 @@ has_subl()
 
 command_fail()
 {
-echo $?
 	if [ $? -ne 0 ]
 	then
 		echo ${1}' is failed';
@@ -56,18 +57,22 @@ reset_setting()
 	echo 'Dropboxとの同期をやめて元に戻しますか？ [y/n]'
 	read ANS
 
-	if [ $ANS = 'y' -o $ANS = 'yes' ]; then
+	if [ $ANS = 'y' -o $ANS = 'yes' ]
+	then
+
+has_subl
+
 		cd  ~/Library/Application\ Support/Sublime\ Text\ 2/
 
 		rm -rf Installed\ Packages Packages Pristine\ Packages
 
 		mv ./Installed\ Packages_Original ./Installed\ Packages
 
-		mv ./Packages_Original ./Packages ./Packages
+		mv ./Packages_Original ./Packages
 
 		mv ./Pristine\ Packages_Original ./Pristine\ Packages
 
-		echo 'Dropboxと同期される前の状態にもどりました';
+		echo 'Dropboxと同期される前の状態にもどりました'
 	fi
 }
 
@@ -80,8 +85,27 @@ init()
 		;;
 		'reset')
 			reset_setting
+			exit
 		;;
 	esac
+}
+
+make_dir_on_dropbox()
+{
+	if [ ! -d ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages ]
+	then
+		mkdir -p ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages
+	fi
+
+	if [ ! -d ~/Dropbox/Sublime\ Text\ 2/Packages ]
+	then
+		mkdir -p ~/Dropbox/Sublime\ Text\ 2/Packages
+	fi
+
+	if [ ! -d ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages ]
+	then
+		mkdir -p ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages
+	fi
 }
 
 init ${1}
@@ -95,12 +119,13 @@ has_subl
 cd  ~/Library/Application\ Support/Sublime\ Text\ 2/
 pwd
 
+make_dir_on_dropbox
 
 if [ -d ./Installed\ Packages ]
 then
 	rsync -avn ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages
 	command_fail 'rsync'
-	if [ ! -L ./Installed\ Packages ]
+	if [ ! -L ./Installed\ Packages  ]
 	then
 		rsync -a ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages
 		mv ./Installed\ Packages ./Installed\ Packages_Original
