@@ -75,6 +75,22 @@ Dropboxと同期するのをやっぱりやめてもとに戻す
 
 ./sublime-packages-sync-to-dropbox.sh reset
 
+■Dropboxの方を優先する
+
+基本は使わないけどコマンド
+
+/Users/yanai_masahiro/Dropbox/Sublime Text 2/の
+
+Installed Packages/ Packages/           Pristine Packages/
+
+から
+
+Packages_Original Installed\ Packages_Original Pristine\ Packages
+
+にコピーします。つまり、Dropboxの方がlocalよりも色々進んでカスタマイズした場合に行います。
+
+./sublime-packages-sync-to-dropbox.sh dropbox
+
 Dropboxでパッケージを同期できるようになったはずなので
 
 Sublime Text 2 を起動しよう!
