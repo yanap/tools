@@ -76,16 +76,39 @@ has_subl
 	fi
 }
 
+dropbox_base()
+{
+	rsync -avn ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages_Original/
+	command_fail 'rsync'
+	rsync -a ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages_Original/
+
+	rsync -avn ~/Dropbox/Sublime\ Text\ 2/Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Packages_Original/
+	command_fail 'rsync'
+	rsync -a ~/Dropbox/Sublime\ Text\ 2/Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Packages_Original/
+
+	rsync -avn ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Pristine\ Packages_Original/
+	command_fail 'rsync'
+	rsync -a ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages/ ~/Library/Application\ Support/Sublime\ Text\ 2/Pristine\ Packages_Original/
+}
+
 init()
 {
 	case $1 in
 		'help')
 			echo 'usage: sublime-package-sync-dropbox [reset|help]'
 			echo 'resetはDropboxと同期する前に戻します'
+			echo 'dropboxはDropboxのパッケージを '
+			echo 'Packages_Original Installed\ Packages_Original Pristine\ Packages'
+			echo 'にコピーします。つまり、Dropboxの方がlocalよりも色々進んでカスタマイズした場合に行います。'
+			echo 'reset と dropboxはあまりテストしていない'
 			exit
 		;;
 		'reset')
 			reset_setting
+			exit
+		;;
+		'dropbox')
+			dropbox_base
 			exit
 		;;
 	esac
@@ -109,6 +132,7 @@ make_dir_on_dropbox()
 	fi
 }
 
+
 init ${1}
 
 already_installed
@@ -124,34 +148,63 @@ make_dir_on_dropbox
 
 if [ -d ./Installed\ Packages ]
 then
-	rsync -avn ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
+	if [ -d ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages ]
+	then
+		rsync -avn ./Installed\ Packages/ ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages/
+	else
+		rsync -avn ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
+	fi
 	command_fail 'rsync'
 	if [ ! -L ./Installed\ Packages  ]
 	then
-		rsync -a ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
+		if [ -d ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages ]
+		then
+			rsync -a ./Installed\ Packages/ ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages/
+		else
+			rsync -a ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
+		fi
 		mv ./Installed\ Packages ./Installed\ Packages_Original
 	fi
 fi
 
 if [ -d ./Packages ]
 then
-
-	rsync -avnu ./Packages ~/Dropbox/Sublime\ Text\ 2/
-	command_fail 'rsync'
-	if [ ! -L ./Packages ]
+	if [ -d ~/Dropbox/Sublime\ Text\ 2/Packages ]
 	then
-		rsync -a ./Packages ~/Dropbox/Sublime\ Text\ 2/
+		rsync -avn ./Packages/ ~/Dropbox/Sublime\ Text\ 2/Packages/
+	else
+		rsync -avn ./Packages ~/Dropbox/Sublime\ Text\ 2/
+	fi
+	command_fail 'rsync'
+	if [ ! -L ./Installed\ Packages  ]
+	then
+		if [ -d ~/Dropbox/Sublime\ Text\ 2/Packages ]
+		then
+			rsync -a ./Packages/ ~/Dropbox/Sublime\ Text\ 2/Packages/
+		else
+			rsync -a ./Packages ~/Dropbox/Sublime\ Text\ 2/
+		fi
 		mv ./Packages ./Packages_Original
 	fi
 fi
 
 if [ -d ./Pristine\ Packages ]
 then
-	rsync -avnu ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
+	if [ -d ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages ]
+	then
+		rsync -avn ./Pristine\ Packages/ ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages/
+	else
+		rsync -avn ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
+	fi
 	command_fail 'rsync'
 	if [ ! -L ./Pristine\ Packages ]
 	then
-		rsync -a ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
+		if [ -d ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages ]
+		then
+			rsync -a ./Pristine\ Packages/ ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages/
+		else
+			rsync -a ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
+		fi
 		mv ./Pristine\ Packages ./Pristine\ Packages_Original
 	fi
 fi
