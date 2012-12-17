@@ -82,6 +82,7 @@ init()
 		'help')
 			echo 'usage: sublime-package-sync-dropbox [reset|help]'
 			echo 'resetはDropboxと同期する前に戻します'
+			exit
 		;;
 		'reset')
 			reset_setting
@@ -123,11 +124,11 @@ make_dir_on_dropbox
 
 if [ -d ./Installed\ Packages ]
 then
-	rsync -avn ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages
+	rsync -avn ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
 	command_fail 'rsync'
 	if [ ! -L ./Installed\ Packages  ]
 	then
-		rsync -a ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/Installed\ Packages
+		rsync -a ./Installed\ Packages ~/Dropbox/Sublime\ Text\ 2/
 		mv ./Installed\ Packages ./Installed\ Packages_Original
 	fi
 fi
@@ -135,22 +136,22 @@ fi
 if [ -d ./Packages ]
 then
 
-	rsync -avn ./Packages ~/Dropbox/Sublime\ Text\ 2/Packages
+	rsync -avnu ./Packages ~/Dropbox/Sublime\ Text\ 2/
 	command_fail 'rsync'
 	if [ ! -L ./Packages ]
 	then
-		rsync -a ./Packages ~/Dropbox/Sublime\ Text\ 2/Packages
+		rsync -a ./Packages ~/Dropbox/Sublime\ Text\ 2/
 		mv ./Packages ./Packages_Original
 	fi
 fi
 
 if [ -d ./Pristine\ Packages ]
 then
-	rsync -avn ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages
+	rsync -avnu ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
 	command_fail 'rsync'
 	if [ ! -L ./Pristine\ Packages ]
 	then
-		rsync -a ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/Pristine\ Packages
+		rsync -a ./Pristine\ Packages ~/Dropbox/Sublime\ Text\ 2/
 		mv ./Pristine\ Packages ./Pristine\ Packages_Original
 	fi
 fi
